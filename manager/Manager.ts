@@ -2,6 +2,8 @@
 const ADMIN_KEY = "adminAddress"; // admin
 const COMPETITOR_LIST_KEY = "competitorsList"; // Array of competitor addresses
 
+const NUMBER_OF_ROUNDS = 10;
+
 const VALID_THROWS = ["rock", "paper", "scissors"];
 
 // Admin data stuff
@@ -167,7 +169,7 @@ const handler = async (request: Request): Promise<Response> => {
       console.log("Playing a game between", a, 'and', b);
       addCompetitor(a);
       addCompetitor(b);
-      responseMessage = await runGame(a, b, 3);
+      responseMessage = await runGame(a, b, NUMBER_OF_ROUNDS);
       break;
 
     default:
