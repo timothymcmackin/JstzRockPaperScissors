@@ -45,17 +45,27 @@ const runGame = async (a: Address, b: Address, rounds: number): Promise<string> 
     // Get the competitors' responses
     // Call A
     const callA = await fetch(
-      new Request(`jstz://${a}`, {
+      new Request(`jstz://${a}/nextmove`, {
         method: "POST",
-        // body: JSON.stringify({ message: "hello" }),
+        body: JSON.stringify({
+          round: i,
+          rounds,
+          opponent: b,
+          previous: lastChoiceB,
+        }),
       }),
     );
     lastChoiceA = await callA.json();
     // Call B
     const callB = await fetch(
-      new Request(`jstz://${b}`, {
+      new Request(`jstz://${b}/nextmove`, {
         method: "POST",
-        // body: JSON.stringify({ message: "hello" }),
+        body: JSON.stringify({
+          round: i,
+          rounds,
+          opponent: a,
+          previous: lastChoiceA || "",
+        }),
       }),
     );
     lastChoiceB = await callB.json();
