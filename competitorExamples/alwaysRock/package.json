@@ -1,0 +1,17 @@
+{
+  "name": "manager",
+  "authors": "Tim McMackin",
+  "private": true,
+  "version": "0.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@jstz-dev/jstz": "^0.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.2"
+  },
+  "scripts": {
+    "build": "esbuild alwaysRock.ts --bundle --format=esm --target=esnext --minify --outfile=dist/index.js",
+    "deploy": "npm run build && jstz deploy dist/index.js"
+  }
+}
