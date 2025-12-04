@@ -38,7 +38,8 @@ const runGame = async (a: Address, b: Address, rounds: number): Promise<string> 
     throw "Need a positive integer for the number of rounds";
   }
   // Initiate a game with each competitor
-  let lastChoiceA, lastChoiceB;
+  let lastChoiceA: string = "";
+  let lastChoiceB: string = "";
   let scoreA = 0;
   let scoreB = 0;
 
@@ -46,7 +47,7 @@ const runGame = async (a: Address, b: Address, rounds: number): Promise<string> 
   for (let i = 0; i < rounds; i++) {
     // Get the competitors' responses
     // Call A
-    const callA = await fetch(
+    const callAPromise: Promise<Response> = fetch(
       new Request(`jstz://${a}/nextmove`, {
         method: "POST",
         body: JSON.stringify({
@@ -57,20 +58,21 @@ const runGame = async (a: Address, b: Address, rounds: number): Promise<string> 
         }),
       }),
     );
-    lastChoiceA = await callA.json();
+    const callAJsonPromise = callAPromise.then(response => response.json());
     // Call B
-    const callB = await fetch(
+    const callBPromise: Promise<Response> = fetch(
       new Request(`jstz://${b}/nextmove`, {
         method: "POST",
         body: JSON.stringify({
           round: i,
           rounds,
           opponent: a,
-          previous: lastChoiceA || "",
+          previous: lastChoiceA,
         }),
       }),
     );
-    lastChoiceB = await callB.json();
+    const callBJsonPromise = callBPromise.then(response => response.json());
+    [lastChoiceA, lastChoiceB] = await Promise.all([callAJsonPromise, callBJsonPromise]);
     if (!VALID_THROWS.includes(lastChoiceA)) {
       throw `${a} is disqualified for an invalid throw`;
     }
